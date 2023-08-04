@@ -1,0 +1,72 @@
+{
+    "Invariants": [
+        {
+            "config": {
+                "invariant_params": {
+                    "velocity_topic": "/cmd_vel"
+                }, 
+                "invariant_name": "ValidNumbersInvariant", 
+                "invariant_file": "${HOME}/MOBSTA/example/turtlebot-example/run_mobsta_ros1/invariants/valid_numbers_invariant.py"
+            }, 
+            "violations": [], 
+            "invariant_name": "ValidNumbersInvariant"
+        }, 
+        {
+            "config": {
+                "invariant_params": {
+                    "distance_goal": 0.5, 
+                    "angle_goal_deg": 5.0, 
+                    "parking_spot_x_2": -0.825, 
+                    "parking_spot_x_1": -1.25, 
+                    "velocity_topic": "/cmd_vel", 
+                    "position_uncertainty": 0.2, 
+                    "joint_states_topic": "/joint_states", 
+                    "angle_uncertainty_deg": 3.0, 
+                    "bad_command_limit": 10, 
+                    "position_goal": 0.05, 
+                    "parking_spot_y_2": -0.754, 
+                    "parking_spot_y_1": -0.623
+                }, 
+                "invariant_name": "CorrectCommandsInvariant", 
+                "invariant_file": "${HOME}/MOBSTA/example/turtlebot-example/run_mobsta_ros1/invariants/correct_commands_invariant.py"
+            }, 
+            "violations": [], 
+            "invariant_name": "CorrectCommandsInvariant"
+        }, 
+        {
+            "config": {}, 
+            "violations": [], 
+            "invariant_name": "CrashInvariant"
+        }
+    ], 
+    "Metadata": {
+        "mutation-config": {
+            "topics": {
+                "/scan": [
+                    {
+                        "message_intercept": "/intensities", 
+                        "mutations": [
+                            {
+                                "timeframe_end": -1, 
+                                "mutation_args": {
+                                    "maxArrayValue": 255.0, 
+                                    "valueToAdd": -100.0, 
+                                    "arraySize": 259, 
+                                    "minArrayValue": 0.0
+                                }, 
+                                "mutation_chance": 1.0, 
+                                "mutation_type": "Float32Array_AddToWholeArrayMutator", 
+                                "timeframe_begin": 0.0
+                            }
+                        ]
+                    }
+                ]
+            }
+        }, 
+        "replay-type": "ROS", 
+        "replay-log": "/home/mobstauser/MOBSTA/example/turtlebot-example/logs/ros1/sensor_inputs_2023-06-01-11-37-28_0.bag", 
+        "replay-delay": 0.0, 
+        "seed": 3420143605, 
+        "test-time": 90.0
+    }
+}

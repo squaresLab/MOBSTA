@@ -1,0 +1,17 @@
+--style=1tbs
+--indent=spaces=4
+--convert-tabs
+--break-blocks
+--unpad-paren
+--pad-oper
+--pad-header
+--indent-classes
+--indent-switches
+--indent-cases
+--indent-namespaces
+--indent-preprocessor
+--indent-col1-comments
+--max-instatement-indent=60
+--add-one-line-brackets
+--align-pointer=type
+--suffix=none

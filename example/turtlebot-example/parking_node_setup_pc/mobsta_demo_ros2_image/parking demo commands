@@ -1,0 +1,13 @@
+Startup turtlebot
+  - ssh hpsta@<turtlebot ip>
+    password: turtle2023
+    once logged in, run:
+  - ./startup_robot.sh <ip of PC>
+
+On PC side  
+    to record a log
+  - cd $HOME/src/hpsta/hpsta_turtlebot/hpsta_demo_ros2_image
+  - python3 record-log.py <optional log name>
+        
+    run the parking demo
+  - ros2 launch turtlebot3_automatic_parking turtlebot3_automatic_parking.launch.py     

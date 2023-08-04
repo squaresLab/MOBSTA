@@ -1,5 +1,5 @@
-This code is distributed under mutliple licenses
 
+This code is distributed under mutliple licenses
 For non-commercial academic usage, this code is distributed under the lGPL.
 
 For any commercial or non-academic usage, this code is proprietary. Please contact robobusters@nrec.ri.cmu.edu for licensing terms.
@@ -11,7 +11,6 @@ A version of this code is availble under government usage rights, please contact
 All open source code is provided under its original license. Modifications to the code are covered by the above license terms
 
 This includes ros_comm, ros_msg_parser and rosbag2
-
 
 
 # Proprietary Copyright Statement
