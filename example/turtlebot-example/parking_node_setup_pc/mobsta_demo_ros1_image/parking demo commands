@@ -1,0 +1,20 @@
+On PC side
+ - roscore
+
+Startup turtlebot
+  - ssh hpsta@<turtlebot ip>
+    password: turtle2023
+    once logged in, run:
+  - ./startup_robot.sh <ip of PC>
+
+On PC side
+    to start up rviz, run
+  - roslaunch turtlebot3_bringup turtlebot3_remote.launch
+  - rosrun rviz rviz -d `rospack find turtlebot3_automatic_parking`/rviz/turtlebot3_automatic_parking.rviz
+  
+    to record a log
+  - cd $HOME/src/hpsta/hpsta_turtlebot/hpsta_demo_ros1_image
+  - python3 record-log.py <optional log name>
+        
+    run the parking demo
+  - roslaunch turtlebot3_automatic_parking turtlebot3_automatic_parking.launch        

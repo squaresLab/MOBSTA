@@ -1,0 +1,33 @@
+{
+  "replay-type": "ROS",
+  "replay-log": "${HOME}/MOBSTA/example/turtlebot-example/logs/ros1/sensor_inputs_2023-06-01-11-37-28_0.bag",
+  "replay-delay": 0.0,
+  "test-time": 90.0,
+  "mutation-config":
+  { 
+    "topics": 
+    {
+      "/scan": 
+      [
+        {
+          "message_intercept": "/intensities",
+          "mutations": [
+            {
+              "mutation_type": "Float32Array_AddToWholeArrayMutator",
+              "mutation_chance": 1.0,
+              "timeframe_begin": 0.0,
+              "timeframe_end": -1,
+              "mutation_args": 
+              {
+                "valueToAdd": -100.0,
+                "minArrayValue": 0.0,
+                "maxArrayValue": 255.0,
+                "arraySize": 259
+              }
+            }         
+          ]
+        }
+      ]
+    } 
+  }
+}

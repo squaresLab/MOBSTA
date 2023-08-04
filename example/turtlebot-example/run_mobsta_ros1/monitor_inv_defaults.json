@@ -1,0 +1,27 @@
+[
+{
+  "invariant_name": "ValidNumbersInvariant",
+  "invariant_file": "${HOME}/src/hpsta/hpsta-turtlebot-test/run_hpsta_ros1/invariants/valid_numbers_invariant.py",
+  "invariant_params": {
+    "velocity_topic" : "/cmd_vel"
+  }
+},
+{
+  "invariant_name": "CorrectCommandsInvariant",
+  "invariant_file": "${HOME}/src/hpsta/hpsta-turtlebot-test/run_hpsta_ros1/invariants/correct_commands_invariant.py",
+  "invariant_params": {
+    "velocity_topic" : "/cmd_vel",
+    "joint_states_topic" : "/joint_states",
+    "bad_command_limit" : 10,
+    "angle_goal_deg" : 5.0,
+    "position_goal" : 0.05,
+    "distance_goal" : 0.5,
+    "angle_uncertainty_deg" : 3.0,
+    "position_uncertainty" : 0.2,
+    "parking_spot_x_1" : -1.25,
+    "parking_spot_y_1" : -0.623,
+    "parking_spot_x_2" : -0.825,
+    "parking_spot_y_2" : -0.754
+  }
+}
+]
