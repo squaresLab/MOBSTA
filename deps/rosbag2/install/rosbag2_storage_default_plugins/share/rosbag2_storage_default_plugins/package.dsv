@@ -1,0 +1,11 @@
+source;share/rosbag2_storage_default_plugins/hook/cmake_prefix_path.ps1
+source;share/rosbag2_storage_default_plugins/hook/cmake_prefix_path.dsv
+source;share/rosbag2_storage_default_plugins/hook/cmake_prefix_path.sh
+source;share/rosbag2_storage_default_plugins/hook/ld_library_path_lib.ps1
+source;share/rosbag2_storage_default_plugins/hook/ld_library_path_lib.dsv
+source;share/rosbag2_storage_default_plugins/hook/ld_library_path_lib.sh
+source;share/rosbag2_storage_default_plugins/local_setup.bash
+source;share/rosbag2_storage_default_plugins/local_setup.dsv
+source;share/rosbag2_storage_default_plugins/local_setup.ps1
+source;share/rosbag2_storage_default_plugins/local_setup.sh
+source;share/rosbag2_storage_default_plugins/local_setup.zsh

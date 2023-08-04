@@ -1,0 +1,2 @@
+source;share/rosbag2_test_common/environment/ament_prefix_path.sh
+source;share/rosbag2_test_common/environment/path.sh

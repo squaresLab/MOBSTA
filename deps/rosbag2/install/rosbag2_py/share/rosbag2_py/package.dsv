@@ -1,0 +1,8 @@
+source;share/rosbag2_py/hook/cmake_prefix_path.ps1
+source;share/rosbag2_py/hook/cmake_prefix_path.dsv
+source;share/rosbag2_py/hook/cmake_prefix_path.sh
+source;share/rosbag2_py/local_setup.bash
+source;share/rosbag2_py/local_setup.dsv
+source;share/rosbag2_py/local_setup.ps1
+source;share/rosbag2_py/local_setup.sh
+source;share/rosbag2_py/local_setup.zsh

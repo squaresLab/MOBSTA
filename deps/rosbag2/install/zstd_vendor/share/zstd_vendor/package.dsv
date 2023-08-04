@@ -1,0 +1,11 @@
+source;share/zstd_vendor/hook/cmake_prefix_path.ps1
+source;share/zstd_vendor/hook/cmake_prefix_path.dsv
+source;share/zstd_vendor/hook/cmake_prefix_path.sh
+source;share/zstd_vendor/hook/ld_library_path_lib.ps1
+source;share/zstd_vendor/hook/ld_library_path_lib.dsv
+source;share/zstd_vendor/hook/ld_library_path_lib.sh
+source;share/zstd_vendor/local_setup.bash
+source;share/zstd_vendor/local_setup.dsv
+source;share/zstd_vendor/local_setup.ps1
+source;share/zstd_vendor/local_setup.sh
+source;share/zstd_vendor/local_setup.zsh

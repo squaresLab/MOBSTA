@@ -1,0 +1,156 @@
+--- rosbag2_transport/include/rosbag2_transport/mutation_player.hpp
++++ rosbag2_transport/include/rosbag2_transport/mutation_player.hpp
+@@ -20,6 +20,7 @@
+ #include "rosbag2_transport/player.hpp"
+ #include "rosbag2_transport/play_options.hpp"
+ #include "rosbag2_storage/bag_metadata.hpp"
++#include "rosbag2_transport/introspection_helpers.hpp"
+ #include <gorgon/mutators/base.h>
+ #include <nlohmann/json.hpp>
+ #include <random>
+@@ -28,6 +29,8 @@ using json = nlohmann::json;
+ 
+ namespace rosbag2_transport
+ {
++  uint32_t get_offset_from_typeinfo(const TypeInfo *type_info, std::list<std::string>::iterator intercept_list_it, const std::list<std::string>::iterator &intercept_list_end);
++
+   class MutationPlayer : public Player
+   {
+   public:
+@@ -105,6 +108,11 @@ namespace rosbag2_transport
+      * @brief configurations of the mutation topics and time ranges of their application.
+      */
+     json m_config_json;
++
++    /**
++     * @brief stores preprocessed split of the intercept to save time during publishing.
++     */
++    std::map<std::string, std::list<std::string>> m_intercept_map;
+   };
+ }
+ 
+--- rosbag2_transport/src/rosbag2_transport/mutation_player.cpp
++++ rosbag2_transport/src/rosbag2_transport/mutation_player.cpp
+@@ -26,7 +26,7 @@
+ #include "rosbag2_cpp/types/introspection_message.hpp"
+ #include "rosbag2_cpp/serialization_format_converter_factory.hpp"
+ #include "rosbag2_storage/metadata_io.hpp"
+-#include "rosbag2_transport/introspection_helpers.hpp"
++#include "rosidl_typesupport_introspection_cpp/field_types.hpp"
+ 
+ /**
+  * @brief Hash function used to generate a per-message seed used in deterministic
+@@ -48,6 +48,73 @@ unsigned long hashDjb2(const uint8_t *input, const size_t input_size)
+ 
+ namespace rosbag2_transport
+ {
++  std::list<std::string> split_string(std::string s, const std::string &delimiter)
++  {
++    std::list<std::string> result;
++    size_t pos = 0;
++    std::string token;
++    while ((pos = s.find(delimiter)) != std::string::npos)
++    {
++      token = s.substr(0, pos);
++      result.push_back(token);
++      s.erase(0, pos + delimiter.length());
++    }
++    result.push_back(s);
++    return result;
++  }
++
++  uint32_t get_offset_from_member(const MemberInfo &member_info, std::list<std::string>::iterator &intercept_list_it, const std::list<std::string>::iterator &intercept_list_end)
++  {
++    if (intercept_list_it == intercept_list_end)
++    {
++      return -1;
++    }
++
++    // check array type
++    if (member_info.is_array_)
++    {
++      ++intercept_list_it;
++      // TODO handle arrays
++      return -1;
++    }
++
++    // check compsite message
++    if (member_info.type_id_ == rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE)
++    {
++      const auto &type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
++      return get_offset_from_typeinfo(type_info, ++intercept_list_it, intercept_list_end);
++    }
++
++    // check by value
++    if (std::strcmp(member_info.name_, intercept_list_it->c_str()) == 0)
++    {
++
++      if (++intercept_list_it != intercept_list_end)
++        return -1;
++      return member_info.offset_;
++    }
++    return -1;
++  }
++
++  uint32_t get_offset_from_typeinfo(const TypeInfo *type_info, std::list<std::string>::iterator intercept_list_it, const std::list<std::string>::iterator &intercept_list_end)
++  {
++    if (intercept_list_it == intercept_list_end)
++      return -1;
++
++    for (uint32_t i = 0; i < type_info->member_count_; ++i)
++    {
++      const MemberInfo &member_info = type_info->members_[i];
++      if (std::strcmp(member_info.name_, intercept_list_it->c_str()) == 0)
++      {
++        uint32_t offset = get_offset_from_member(member_info, intercept_list_it, intercept_list_end);
++
++        if (member_info.type_id_ == rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE)
++          return offset + member_info.offset_;
++        return offset;
++      }
++    }
++    return -1;
++  }
+   MutationPlayer::MutationPlayer(
+       std::unique_ptr<rosbag2_cpp::Reader> &&reader,
+       const rosbag2_storage::StorageOptions &storage_options,
+@@ -85,6 +152,7 @@ namespace rosbag2_transport
+       {
+         // calculate full intercept for message parser
+         const std::string &intercept_of_interest = intercept_options["message_intercept"];
++        m_intercept_map[intercept_of_interest] = split_string(intercept_of_interest, ".");
+         std::string full_intercept = topic_of_interest + intercept_of_interest;
+ 
+         // calculate per-field constructor seed to avoid copied mutations on different topics
+@@ -154,6 +222,7 @@ namespace rosbag2_transport
+     auto msg_size = type_info->size_of_;
+     std::shared_ptr<uint8_t> msg_buffer(new uint8_t[msg_size], [](uint8_t *ptr)
+                                         { delete[] ptr; });
++    std::memset(msg_buffer.get(), 0, type_info->size_of_);
+ 
+     auto serialized_msg = std::make_shared<rclcpp::SerializedMessage>(*message->serialized_data);
+     deserializer.deserialize_message(serialized_msg.get(), msg_buffer.get());
+@@ -169,19 +238,16 @@ namespace rosbag2_transport
+       const std::string intercept_str = intercept_options.at("message_intercept").get<std::string>();
+       std::string full_intercept = topic_of_interest + intercept_str;
+ 
+-      auto type_info_members_end = type_info->members_ + type_info->member_count_;
+-      auto member_it = std::find_if(type_info->members_, type_info_members_end, [intercept_str](MemberInfo member)
+-                                    { return std::strcmp(member.name_, intercept_str.c_str()) == 0; });
++      std::list<std::string> &intercept_list = m_intercept_map[intercept_str];
+ 
+-      if (member_it == type_info_members_end)
++      uint32_t data_offset = get_offset_from_typeinfo(type_info, intercept_list.begin(), intercept_list.end());
++      if (data_offset == -1)
+       {
+         RCUTILS_LOG_ERROR_NAMED("mutation_player", "failed to find intercept of of name %s in definition of %s", intercept_str.c_str(), topic_type.c_str());
+       }
+-
+-      uint32_t data_offset = member_it->offset_;
+       uint8_t *data = msg_buffer.get() + data_offset;
+ 
+-      const json mutations = intercept_options["mutations"];
++      const json &mutations = intercept_options["mutations"];
+       for (size_t i = 0; i < mutations.size(); i++)
+       {
+         const auto &mutator_description = mutations[i];

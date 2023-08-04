@@ -1,0 +1,8 @@
+source;share/rosbag2_test_common/hook/cmake_prefix_path.ps1
+source;share/rosbag2_test_common/hook/cmake_prefix_path.dsv
+source;share/rosbag2_test_common/hook/cmake_prefix_path.sh
+source;share/rosbag2_test_common/local_setup.bash
+source;share/rosbag2_test_common/local_setup.dsv
+source;share/rosbag2_test_common/local_setup.ps1
+source;share/rosbag2_test_common/local_setup.sh
+source;share/rosbag2_test_common/local_setup.zsh

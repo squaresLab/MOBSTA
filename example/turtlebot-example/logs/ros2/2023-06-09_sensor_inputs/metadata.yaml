@@ -1,0 +1,61 @@
+rosbag2_bagfile_information:
+  version: 4
+  storage_identifier: sqlite3
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - sensor_inputs.db3
+  duration:
+    nanoseconds: 60404566701
+  starting_time:
+    nanoseconds_since_epoch: 1686332920933434734
+  message_count: 9987
+  topics_with_message_count:
+    - topic_metadata:
+        name: /imu
+        type: sensor_msgs/msg/Imu
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 1209
+    - topic_metadata:
+        name: /joint_states
+        type: sensor_msgs/msg/JointState
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 1209
+    - topic_metadata:
+        name: /magnetic_field
+        type: sensor_msgs/msg/MagneticField
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 1209
+    - topic_metadata:
+        name: /odom
+        type: nav_msgs/msg/Odometry
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 1209
+    - topic_metadata:
+        name: /scan
+        type: sensor_msgs/msg/LaserScan
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 494
+    - topic_metadata:
+        name: /sensor_state
+        type: turtlebot3_msgs/msg/SensorState
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 1209
+    - topic_metadata:
+        name: /tf
+        type: tf2_msgs/msg/TFMessage
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 3342
+    - topic_metadata:
+        name: /tf_static
+        type: tf2_msgs/msg/TFMessage
+        serialization_format: cdr
+        offered_qos_profiles: ""
+      message_count: 106
