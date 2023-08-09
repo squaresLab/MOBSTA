@@ -223,7 +223,3 @@ This material is based upon work supported by the U.S. Army Research Office and 
 
 The content of the information does not necessarily reflect the position or the policy of the government and no official endorsement should be inferred.
 
-
-
-
->>>>>>> a195a73... first commit
