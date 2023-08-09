@@ -1,7 +1,7 @@
 # MOBSTA
 MOBSTA: Mutation Based Safety Testing for Autonomy. Robustness testing for your ROS robots.
 
-Please checkout individual feature branches (e.g. `ros1/kinetic`) to see the code.
+Because of version conflicts, each supported ROS middleware is currently on it's own branch **Please checkout individual feature branches (e.g. `ros1/kinetic`) to see the code.**
 
 # Acknowledgements
 
