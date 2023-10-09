@@ -2,7 +2,7 @@
 
 HOST_LOG_DIR=$PWD/../logs
 DOCKER_LOG_DIR=$HOME/logs
-IMAGE_NAME=hpsta_demo_ros1_image
+IMAGE_NAME=mobsta_demo_ros1_image
 
 xhost +local:docker
 docker run -it --privileged --log-driver=syslog --net=host \
