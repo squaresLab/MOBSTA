@@ -121,6 +121,7 @@ we will mount the MOBSTA directory into the container.
 We can then run MOBSTA within the container via the following command:
 
 ```shell
+cd ~/MOBSTA
 ./run.py -t /path/to/mobsta-turtlebot-test/run_mobsta_ros1
 ```
 
