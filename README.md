@@ -1,25 +1,27 @@
 # MOBSTA
-MOBSTA: Mutation Based Safety Testing for Autonomy. 
+
+MOBSTA: Mutation Based Safety Testing for Autonomy.
 
 Robustness testing for your ROS robots!
 
 ## License
 
 This repository is provided under LGPL for non-commercial academic
-usage. 
+usage.
 
 For commercial or non-academic usage, a more capable version
 is available for under proprietary licensing terms. Please contact
-robobusters@nrec.ri.cmu.edu for more details. 
+robobusters@nrec.ri.cmu.edu for more details.
 
 ## Overview
+
 The MOBSTA program runs end to end robustness tests of a specified
 System Under Test (SUT). A Custom Log Replay implementation
 reads real log data, mutates the data with the gorgon mutations
-library, and then passes it to the SUT. 
+library, and then passes it to the SUT.
 SUT output is then monitored for unsafe behavior using defined
-saftey invariant scripts. 
- 
+saftey invariant scripts.
+
 The system has three parts
 
 - log-replay
@@ -27,27 +29,30 @@ The system has three parts
 - Monitor
 
 ### Log-replay
+
 The MOBSTA Log Replay API provides a way for MOBSTA to interact with
 any log replayer through a python wrapper. Any replay executable
-can be added to the MOBSTA log replay API by implementing the 
+can be added to the MOBSTA log replay API by implementing the
 replay interface and adding the player to the `replay/replay.py`
-file. 
+file.
 
 MOBSTA itself currently supports two middleware options for log replay:
 
 - [ROS](https://www.ros.org/)
-- [ROS2](https://www.ros.org/)
+- [ROS 2](https://www.ros.org)
 
-ROS and ROS2 have mutational replay apps that utilize the Gorgon Mutations
+ROS and ROS 2 have mutational replay apps that utilize the Gorgon Mutations
 Library and can be launched with MOBSTA
 
-#### NOTE:
-At the moment, ROS and ROS2 are supported on two seperate 
+#### NOTE
+
+At the moment, ROS and ROS 2 are supported on two seperate
 branches, though we intend to merge them into a single tool the future
 
 #### ROS Mutational Replay
-ROS Log Replay and its dependencies are installed via 
-cmake in the deps directory. Log replay should needs a 
+
+ROS Log Replay and its dependencies are installed via
+cmake in the deps directory. Log replay should needs a
 valid ROS installation to build.
 
 [NLohmann's cpp-json](https://github.com/nlohmann/json) is
@@ -61,21 +66,21 @@ to properly install ROS mutational Replay.
 MOBSTA launches an SUT using a harness script. This allows MOBSTA
 launch any SUT without being dependent on the middleware used.
 
-MOBSTA executes the harness script in a seperate process, and 
-continuously polls the status of that process during the 
+MOBSTA executes the harness script in a seperate process, and
+continuously polls the status of that process during the
 execution of the test
 
 ### Monitor
 
 MOBSTA uses a monitor to check the SUT behavior for compliance
-with a safety specification. The monitor is a ROS node, which 
-launches independent "invariant" nodes that check specific 
-properties of the SUT. For example, an invariant might be that 
+with a safety specification. The monitor is a ROS node, which
+launches independent "invariant" nodes that check specific
+properties of the SUT. For example, an invariant might be that
 the SUT never commands a speed above a certain speed limit.
 
 Each of these invariants listens to the ROS messages output by
-the SUT and checks them against the safety rule implemented by 
-that invariant. Any violations are then time-stamped and reported 
+the SUT and checks them against the safety rule implemented by
+that invariant. Any violations are then time-stamped and reported
 back to the central monitor node, which logs them to a file.
 
 The current monitor report shows the invariants used, the parameters
@@ -88,16 +93,16 @@ be easily replicated.
 ## Example Using ROS
 
 This is a simple-ish application that is meant to be a sort of
-case study for integrating MOBSTA tools with ROS1. This demo uses the
-[turtlebot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/)
+case study for integrating MOBSTA tools with ROS 1. This demo uses the
+[TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/)
 robot and runs an application which uses the LIDAR to look for a
 retroreflector, then drives the robot to park next to it.
 
 ### Setup
 
-For this example, you will need to follow the 
-`example/turtlebot-example/ROS1_Example.md` file, which 
-contains instructions on how to build and run the demo and collect logs. 
+For this example, you will need to follow the
+`example/turtlebot-example/ROS1_Example.md` file, which
+contains instructions on how to build and run the demo and collect logs.
 In addition, there are some example log files in this directory
 project NAS in the directory /mobsta/turtlebot3_logs/ros1.
 
@@ -105,43 +110,38 @@ project NAS in the directory /mobsta/turtlebot3_logs/ros1.
 ### Running the Example
 
 The **example/turtlebot-test** repository contains a sample **run_mobsta_ros1**
-directory for running MOBSTA robustness tests on the parking demo logs. Since 
+directory for running MOBSTA robustness tests on the parking demo logs. Since
 we don't want to install all the dependencies on the host system for this example
-we will mount the MOBSTA directory into the container. 
+we will mount the MOBSTA directory into the container.
 
-```
+```shell
 ./example/turtlebot-test/run_mobsta_ros1/launch_mobsta_container.sh
 ```
 
-We can then build the MOBSTA tools for ROS inside the container
+We can then run MOBSTA within the container via the following command:
 
-```
-./deps/install
-```
-
-
-
-``` 
-./run.py -t /path/to/mobsta-turtlebot-test/run_mobsta_ros1 
+```shell
+./run.py -t /path/to/mobsta-turtlebot-test/run_mobsta_ros1
 ```
 
 #### Running MOBSTA outside the container
+
 It is also possible to run MOBSTA on the host system. This can be desirable when
-one expects the SUT build, and thus Docker image, to change, but wishes to maintain 
-the test setup. In this case run the install on the host system. 
+one expects the SUT build, and thus Docker image, to change, but wishes to maintain
+the test setup. In this case run the install on the host system.
 
 The **run_mobsta_ros1** example directory is configured to check two
 invariants. There’s a “valid numbers invariant” that just makes sure
 that the commanded velocities never contain inf or NaN values. And there’s
 an “all steps invariant” that checks to make sure that the parking demo
-node runs all the steps of rotate-move-rotate-move (The mobsta-turtlebot-test 
-repo contains an overview of the steps that the node executes). The 
-replay_config.json file is set up so that the “x” component of the odometry 
-pose gets stuck at zero. In most cases, this should cause the AllStepsInvariant 
-to trigger a failure, so that when you run MOBSTA you get an output like the 
+node runs all the steps of rotate-move-rotate-move (The mobsta-turtlebot-test
+repo contains an overview of the steps that the node executes). The
+replay_config.json file is set up so that the “x” component of the odometry
+pose gets stuck at zero. In most cases, this should cause the AllStepsInvariant
+to trigger a failure, so that when you run MOBSTA you get an output like the
 following:
 
-``` 
+```json
 {
     "Invariants": [
         {
@@ -190,31 +190,34 @@ following:
             }
         }, "seed": 2184321993
     }
-} 
+}
 ```
 
 The output is divided into two sections. The bottom section, "Metadata", gives
-a summary of the log that was used and the mutators. The top section, 
+a summary of the log that was used and the mutators. The top section,
 "Invariants", tells you if any of the invariants were violated. If they were,
 then the violation times will show up in the "violations" array. In the above
-example, the "All Steps Invariant" was configured with a time limit of 70 
+example, the "All Steps Invariant" was configured with a time limit of 70
 seconds, so that it would trigger if the demo did not execute all of the steps
 within 70 seconds. The "violations" array under "AllStepsInvariant" shows that
-this invariant was violated after the 70 second mark with the stuck value 
+this invariant was violated after the 70 second mark with the stuck value
 mutator active.
 
 ## Development
 
 ### Running Unit/integration Tests
 
-unittests depend on nose2, to install run  
+unittests depend on nose2, to install run:
 
-`python -m pip install nose2`  
+```shell
+python -m pip install nose2
+```
 
-then run the following command  
+then run the following command
 
-`python -m nose2 -v --top-level-directory $PWD/src/MOBSTA`  
-
+```shell
+python -m nose2 -v --top-level-directory $PWD/src/MOBSTA
+```
 
 ## Acknowledgements
 
