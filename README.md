@@ -109,13 +109,13 @@ project NAS in the directory /mobsta/turtlebot3_logs/ros1.
 
 ### Running the Example
 
-The **example/turtlebot-test** repository contains a sample **run_mobsta_ros1**
-directory for running MOBSTA robustness tests on the parking demo logs. Since
+The **example/turtlebot-example** directory contains a sample **run_mobsta_ros1**
+subdirectory for running MOBSTA robustness tests on the parking demo logs. Since
 we don't want to install all the dependencies on the host system for this example
 we will mount the MOBSTA directory into the container.
 
 ```shell
-./example/turtlebot-test/run_mobsta_ros1/launch_mobsta_container.sh
+./example/turtlebot-example/run_mobsta_ros1/launch_mobsta_container.sh
 ```
 
 We can then run MOBSTA within the container via the following command:
